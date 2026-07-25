@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>중1 과학·사회 도전 퀴즈</title>
+<title>중1 도전 퀴즈</title>
 <style>
   :root {
     --ink: #1B2A3A;
@@ -15,6 +15,8 @@
     --soc-soft: #F7E8DD;
     --eng: #5B4B9E;      /* 영어: 인디고 */
     --eng-soft: #E8E4F5;
+    --kor: #B23A48;      /* 국어: 홍시빛 */
+    --kor-soft: #F7E1E3;
     --correct: #2E8B57;
     --correct-soft: #E3F3E9;
     --wrong: #C0392B;
@@ -89,6 +91,7 @@
   .subj-card.sci:hover { border-color: var(--sci); }
   .subj-card.soc:hover { border-color: var(--soc); }
   .subj-card.eng:hover { border-color: var(--eng); }
+  .subj-card.kor:hover { border-color: var(--kor); }
   .subj-emoji { font-size: 32px; }
   .subj-name { font-size: 18px; font-weight: 800; }
   .subj-desc { font-size: 13px; color: var(--muted); }
@@ -124,6 +127,7 @@
   .subj-tag.sci { background: var(--sci); }
   .subj-tag.soc { background: var(--soc); }
   .subj-tag.eng { background: var(--eng); }
+  .subj-tag.kor { background: var(--kor); }
   .qcount { font-size: 13px; color: var(--muted); font-weight: 600; }
   .timer {
     font-size: 15px; font-weight: 800; font-variant-numeric: tabular-nums;
@@ -348,7 +352,7 @@
   <section id="s-title" class="screen active">
     <div class="title-wrap">
       <div class="badge">중학교 1학년 · 2022 개정 교육과정</div>
-      <h1 class="title">도전! 과학·사회 퀴즈</h1>
+      <h1 class="title">도전! 중1 퀴즈</h1>
       <p class="subtitle">시험처럼 풀어보는 20문제 · 100점 만점</p>
       <div class="rules">
         <div class="rline"><span class="rdot">•</span><span><b>20문제</b>, 각 <b>5점</b> (쉬운 문제부터 점점 어렵게)</span></div>
@@ -383,6 +387,10 @@
           <button class="subj-card eng" onclick="chooseSubject('ENGLISH')">
             <span class="subj-emoji">🔤</span>
             <span><span class="subj-name">영어</span><br><span class="subj-desc">문법·회화 · 🔊 발음 듣기 지원</span></span>
+          </button>
+          <button class="subj-card kor" onclick="chooseSubject('KOREAN')">
+            <span class="subj-emoji">📖</span>
+            <span><span class="subj-name">국어</span><br><span class="subj-desc">문법·어휘·독해·문학 등</span></span>
           </button>
         </div>
         <button class="btn btn-ghost" style="margin-top:14px" onclick="openRanking()">🏆 랭킹 보기</button>
@@ -494,6 +502,7 @@
       <button class="rank-tab" data-sub="SCIENCE" onclick="switchRankTab('SCIENCE')">과학</button>
       <button class="rank-tab" data-sub="SOCIAL" onclick="switchRankTab('SOCIAL')">사회</button>
       <button class="rank-tab" data-sub="ENGLISH" onclick="switchRankTab('ENGLISH')">영어</button>
+      <button class="rank-tab" data-sub="KOREAN" onclick="switchRankTab('KOREAN')">국어</button>
     </div>
     <div id="rankList" class="rank-list"></div>
     <button class="btn btn-ghost" style="margin-top:18px" onclick="goHome()">← 처음으로</button>
@@ -510,7 +519,7 @@
 const CONFIG = {
   // Supabase 를 만든 뒤 아래 두 값을 채우세요.
   // 비워두면 랭킹 없이 퀴즈만 작동합니다.
-  SUPABASE_URL: "https://jslmwmkcnzhzgvcyuvlv.supabase.co",
+  SUPABASE_URL: "https://jslmwmkcnzhzgvcyuvlv.supabase.co/rest/v1/",
   SUPABASE_KEY: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpzbG13bWtjbnpoemd2Y3l1dmx2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ5Mzk1NDksImV4cCI6MjEwMDUxNTU0OX0.5_l0C4njMvbj-3hP4YknmvDQa0tvF6jZ9o2-DzO6RQA",
 };
 
@@ -644,7 +653,7 @@ async function fetchRanking(subject) {
 }
 
 let _rankTab = "ALL";
-const SUBJ_LABEL = { SCIENCE:"과학", SOCIAL:"사회", ENGLISH:"영어" };
+const SUBJ_LABEL = { SCIENCE:"과학", SOCIAL:"사회", ENGLISH:"영어", KOREAN:"국어" };
 
 function openRanking() {
   showScreen("s-rank");
@@ -702,9 +711,9 @@ const TOTAL_Q = 20;
 const TIME_LIMIT = 45 * 60; // 45분 = 2700초
 const POINT_PER_Q = 5;
 
-const SUBJ_NAME = { SCIENCE: "과학", SOCIAL: "사회", ENGLISH: "영어" };
-const SUBJ_CLASS = { SCIENCE: "sci", SOCIAL: "soc", ENGLISH: "eng" };
-const SUBJ_VAR = { SCIENCE: "var(--sci)", SOCIAL: "var(--soc)", ENGLISH: "var(--eng)" };
+const SUBJ_NAME = { SCIENCE: "과학", SOCIAL: "사회", ENGLISH: "영어", KOREAN: "국어" };
+const SUBJ_CLASS = { SCIENCE: "sci", SOCIAL: "soc", ENGLISH: "eng", KOREAN: "kor" };
+const SUBJ_VAR = { SCIENCE: "var(--sci)", SOCIAL: "var(--soc)", ENGLISH: "var(--eng)", KOREAN: "var(--kor)" };
 let state = null;
 let timerId = null;
 let currentSubject = "SCIENCE";
